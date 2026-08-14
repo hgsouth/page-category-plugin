@@ -87,8 +87,8 @@ class PCP_Admin_Page {
 		if ( isset( $_POST['pcp_add'] ) ) {
 			check_admin_referer( 'pcp_add_category', 'pcp_add_nonce' );
 
-			$name  = isset( $_POST['pcp_new_name'] ) ? wp_unslash( $_POST['pcp_new_name'] ) : '';
-			$color = isset( $_POST['pcp_new_color'] ) ? wp_unslash( $_POST['pcp_new_color'] ) : '';
+			$name  = isset( $_POST['pcp_new_name'] ) && is_string( $_POST['pcp_new_name'] ) ? wp_unslash( $_POST['pcp_new_name'] ) : '';
+			$color = isset( $_POST['pcp_new_color'] ) && is_string( $_POST['pcp_new_color'] ) ? wp_unslash( $_POST['pcp_new_color'] ) : '';
 
 			$result = PCP_Categories::add( $name, $color );
 
@@ -109,7 +109,7 @@ class PCP_Admin_Page {
 
 			$message = 'saved';
 
-			if ( isset( $_POST['pcp_delete'] ) ) {
+			if ( isset( $_POST['pcp_delete'] ) && is_scalar( $_POST['pcp_delete'] ) ) {
 				PCP_Categories::delete( (int) $_POST['pcp_delete'] );
 				$message = 'deleted';
 			}

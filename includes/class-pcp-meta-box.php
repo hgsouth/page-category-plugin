@@ -72,7 +72,10 @@ class PCP_Meta_Box {
 	 * @param int $post_id Page ID.
 	 */
 	public function save( $post_id ) {
-		if ( ! isset( $_POST['pcp_meta_category'], $_POST['pcp_meta_box_nonce'] ) ) {
+		if ( ! isset( $_POST['pcp_meta_category'], $_POST['pcp_meta_box_nonce'] )
+			|| ! is_scalar( $_POST['pcp_meta_category'] )
+			|| ! is_string( $_POST['pcp_meta_box_nonce'] )
+		) {
 			return;
 		}
 

@@ -9,6 +9,7 @@
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       page-categories
+ * Update URI:        false
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -72,7 +73,13 @@ function pcp_text_color_for( $hex ) {
  * @return string Badge HTML.
  */
 function pcp_badge_html( $category ) {
-	$color = ! empty( $category['color'] ) ? $category['color'] : '#787c82';
+	// Defense in depth: colors are validated on save, but re-validate at render
+	// so a tampered option can never inject anything into the style attribute.
+	$color = isset( $category['color'] ) && is_string( $category['color'] ) ? sanitize_hex_color( $category['color'] ) : '';
+
+	if ( ! $color ) {
+		$color = '#787c82';
+	}
 
 	return sprintf(
 		'<span class="pcp-badge" style="background-color:%1$s;color:%2$s;">%3$s</span>',

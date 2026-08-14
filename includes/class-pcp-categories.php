@@ -12,9 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class PCP_Categories {
 
-	const OPTION_KEY     = 'pcp_categories';
-	const NEXT_ID_KEY    = 'pcp_next_category_id';
-	const META_KEY       = '_pcp_page_category';
+	const OPTION_KEY      = 'pcp_categories';
+	const NEXT_ID_KEY     = 'pcp_next_category_id';
+	const META_KEY        = '_pcp_page_category';
+	const MAX_NAME_LENGTH = 100;
 
 	/**
 	 * Default palette cycled through when adding categories without a color.
@@ -47,14 +48,18 @@ class PCP_Categories {
 		$clean = array();
 
 		foreach ( $categories as $category ) {
-			if ( empty( $category['id'] ) || ! isset( $category['name'] ) ) {
+			if ( ! is_array( $category ) || empty( $category['id'] ) || ! isset( $category['name'] ) || ! is_scalar( $category['name'] ) ) {
 				continue;
 			}
+
+			// Re-validate the stored color so a tampered option degrades to a
+			// safe default instead of reaching any output path.
+			$color = isset( $category['color'] ) && is_string( $category['color'] ) ? sanitize_hex_color( $category['color'] ) : '';
 
 			$clean[] = array(
 				'id'    => (int) $category['id'],
 				'name'  => (string) $category['name'],
-				'color' => isset( $category['color'] ) ? (string) $category['color'] : self::DEFAULT_COLORS[0],
+				'color' => $color ? $color : self::DEFAULT_COLORS[0],
 			);
 		}
 
@@ -85,14 +90,15 @@ class PCP_Categories {
 	 * @return int|WP_Error New category ID, or an error for an empty name.
 	 */
 	public static function add( $name, $color = '' ) {
-		$name = sanitize_text_field( $name );
+		$name = is_string( $name ) ? sanitize_text_field( $name ) : '';
+		$name = mb_substr( $name, 0, self::MAX_NAME_LENGTH );
 
 		if ( '' === $name ) {
 			return new WP_Error( 'pcp_empty_name', __( 'Category name cannot be empty.', 'page-categories' ) );
 		}
 
 		$categories = self::get_all();
-		$color      = sanitize_hex_color( $color );
+		$color      = is_string( $color ) ? sanitize_hex_color( $color ) : '';
 
 		if ( ! $color ) {
 			$color = self::DEFAULT_COLORS[ count( $categories ) % count( self::DEFAULT_COLORS ) ];
@@ -133,12 +139,13 @@ class PCP_Categories {
 		foreach ( (array) $submitted as $id => $row ) {
 			$id = (int) $id;
 
-			if ( ! isset( $existing[ $id ] ) ) {
+			if ( ! isset( $existing[ $id ] ) || ! is_array( $row ) ) {
 				continue;
 			}
 
-			$name  = isset( $row['name'] ) ? sanitize_text_field( $row['name'] ) : '';
-			$color = isset( $row['color'] ) ? sanitize_hex_color( $row['color'] ) : '';
+			$name  = isset( $row['name'] ) && is_string( $row['name'] ) ? sanitize_text_field( $row['name'] ) : '';
+			$name  = mb_substr( $name, 0, self::MAX_NAME_LENGTH );
+			$color = isset( $row['color'] ) && is_string( $row['color'] ) ? sanitize_hex_color( $row['color'] ) : '';
 
 			$updated[] = array(
 				'id'    => $id,

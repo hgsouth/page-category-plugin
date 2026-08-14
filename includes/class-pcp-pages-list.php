@@ -130,7 +130,7 @@ class PCP_Pages_List {
 			return;
 		}
 
-		$current = isset( $_GET['pcp_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['pcp_filter'] ) ) : '';
+		$current = isset( $_GET['pcp_filter'] ) && is_string( $_GET['pcp_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['pcp_filter'] ) ) : '';
 		?>
 		<label class="screen-reader-text" for="pcp-filter"><?php esc_html_e( 'Filter by page category', 'page-categories' ); ?></label>
 		<select name="pcp_filter" id="pcp-filter">
@@ -162,7 +162,7 @@ class PCP_Pages_List {
 		}
 
 		// Filtering.
-		$filter = isset( $_GET['pcp_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['pcp_filter'] ) ) : '';
+		$filter = isset( $_GET['pcp_filter'] ) && is_string( $_GET['pcp_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['pcp_filter'] ) ) : '';
 
 		if ( 'none' === $filter ) {
 			$meta_query   = (array) $query->get( 'meta_query' );
@@ -287,7 +287,10 @@ class PCP_Pages_List {
 	 * @param int $post_id Page ID.
 	 */
 	public function save_quick_edit( $post_id ) {
-		if ( ! isset( $_POST['pcp_quick_category'], $_POST['_inline_edit'] ) ) {
+		if ( ! isset( $_POST['pcp_quick_category'], $_POST['_inline_edit'] )
+			|| ! is_scalar( $_POST['pcp_quick_category'] )
+			|| ! is_string( $_POST['_inline_edit'] )
+		) {
 			return;
 		}
 
@@ -313,7 +316,10 @@ class PCP_Pages_List {
 	 * @param array $shared_post_data Submitted bulk edit data.
 	 */
 	public function save_bulk_edit( $post_ids, $shared_post_data ) {
-		if ( ! isset( $shared_post_data['pcp_bulk_category'] ) || '' === $shared_post_data['pcp_bulk_category'] ) {
+		if ( ! isset( $shared_post_data['pcp_bulk_category'] )
+			|| ! is_scalar( $shared_post_data['pcp_bulk_category'] )
+			|| '' === $shared_post_data['pcp_bulk_category']
+		) {
 			return;
 		}
 
