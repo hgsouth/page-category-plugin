@@ -1,0 +1,92 @@
+/* Category badge (Pages list + management screen) */
+.pcp-badge {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.8;
+	white-space: nowrap;
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+}
+
+.pcp-none {
+	color: #8c8f94;
+}
+
+/* Pages list column */
+.fixed .column-pcp_category {
+	width: 12%;
+}
+
+/* Management screen */
+.pcp-add-form {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 1.5em;
+}
+
+.pcp-table {
+	max-width: 800px;
+}
+
+.pcp-table td {
+	vertical-align: middle;
+}
+
+.pcp-col-drag {
+	width: 36px;
+	text-align: center;
+}
+
+.pcp-col-color {
+	width: 70px;
+}
+
+.pcp-col-count {
+	width: 70px;
+}
+
+.pcp-col-actions {
+	width: 90px;
+}
+
+.pcp-drag-handle {
+	cursor: grab;
+	color: #8c8f94;
+}
+
+.pcp-drag-handle:hover {
+	color: #2271b1;
+}
+
+.pcp-sortable-placeholder {
+	background: #f0f6fc;
+	border: 1px dashed #2271b1;
+	height: 44px;
+}
+
+input[type="color"].pcp-color-input,
+.pcp-add-form input[type="color"] {
+	width: 44px;
+	height: 30px;
+	padding: 2px;
+	cursor: pointer;
+}
+
+.pcp-delete-btn {
+	color: #b32d2e;
+	cursor: pointer;
+	background: none;
+	border: none;
+	padding: 0;
+	text-decoration: underline;
+}
+
+.pcp-delete-btn:hover {
+	color: #8a2424;
+}
