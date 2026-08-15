@@ -34,6 +34,23 @@ These categories are purely an admin organization tool: they are **not** taxonom
 2. Activate **Page Categories (Internal)** on the Plugins screen.
 3. Go to `Pages → Page Categories` to create your first categories.
 
+## Updating
+
+**Do not delete the old version first.** Deleting the plugin runs `uninstall.php`, which wipes every
+category and every page assignment. Deactivating is safe; deleting is not.
+
+To update, use either:
+
+- **Upload the new zip** (WordPress 5.5+): `Plugins → Add New → Upload Plugin`, choose the zip, and
+  when WordPress says the plugin already exists click **Replace current with uploaded**. It compares
+  versions, swaps the files, and leaves your data alone.
+- **Overwrite over SFTP/FTP**: replace the contents of `wp-content/plugins/page-categories/` with the
+  new files. Delete any files that no longer exist in the new version.
+
+The zip's top-level folder must keep the same name as the installed folder (`page-categories`).
+If the folder name changes, WordPress treats it as a separate plugin and you'll end up with two
+copies installed.
+
 ## Requirements
 
 - WordPress 6.3+
