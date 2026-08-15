@@ -69,5 +69,62 @@
 					color: textColorFor( color ),
 				} );
 		} );
+
+		initSortTab();
 	} );
+
+	/**
+	 * Sort Pages tab: select-all, unsaved-change tracking, trash confirmation.
+	 */
+	function initSortTab() {
+		var $form = $( '#pcp-sort-form' );
+
+		if ( ! $form.length ) {
+			return;
+		}
+
+		var dirty = false;
+
+		$form.on( 'change', '#pcp-check-all', function () {
+			$form
+				.find( 'input[name="pcp_selected[]"]' )
+				.prop( 'checked', $( this ).prop( 'checked' ) );
+		} );
+
+		// Highlight rows with an unsaved category change.
+		$form.on( 'change', '.pcp-row-select', function () {
+			dirty = true;
+			$( this ).closest( 'tr' ).addClass( 'pcp-row-dirty' );
+			$( '.pcp-unsaved-note' ).prop( 'hidden', false );
+		} );
+
+		// Submitting saves the changes, so stop warning.
+		$form.on( 'submit', function () {
+			dirty = false;
+		} );
+
+		$( window ).on( 'beforeunload', function () {
+			if ( dirty ) {
+				// Modern browsers show their own generic message.
+				return window.pcpManage ? window.pcpManage.unsavedWarn : '';
+			}
+		} );
+
+		// Leaving via Trash would discard pending edits silently.
+		$form.on( 'click', '.pcp-trash-link', function ( event ) {
+			if (
+				dirty &&
+				! window.confirm(
+					window.pcpManage
+						? window.pcpManage.unsavedWarn
+						: 'Discard unsaved changes?'
+				)
+			) {
+				event.preventDefault();
+				return;
+			}
+
+			dirty = false;
+		} );
+	}
 } )( jQuery );

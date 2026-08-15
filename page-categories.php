@@ -22,6 +22,7 @@ define( 'PCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once PCP_PLUGIN_DIR . 'includes/class-pcp-categories.php';
+require_once PCP_PLUGIN_DIR . 'includes/class-pcp-sort-screen.php';
 require_once PCP_PLUGIN_DIR . 'includes/class-pcp-admin-page.php';
 require_once PCP_PLUGIN_DIR . 'includes/class-pcp-pages-list.php';
 require_once PCP_PLUGIN_DIR . 'includes/class-pcp-meta-box.php';

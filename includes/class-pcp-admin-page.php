@@ -15,6 +15,46 @@ class PCP_Admin_Page {
 	const CAPABILITY = 'manage_options';
 
 	/**
+	 * Sort tab handler.
+	 *
+	 * @var PCP_Sort_Screen
+	 */
+	private $sort_screen;
+
+	/**
+	 * Set up collaborators.
+	 */
+	public function __construct() {
+		$this->sort_screen = new PCP_Sort_Screen();
+	}
+
+	/**
+	 * Base URL for this screen.
+	 *
+	 * @return string
+	 */
+	public static function base_url() {
+		return add_query_arg(
+			array(
+				'post_type' => 'page',
+				'page'      => self::MENU_SLUG,
+			),
+			admin_url( 'edit.php' )
+		);
+	}
+
+	/**
+	 * Which tab is active.
+	 *
+	 * @return string 'manage' or 'sort'.
+	 */
+	private function current_tab() {
+		$tab = isset( $_REQUEST['tab'] ) && is_string( $_REQUEST['tab'] ) ? sanitize_key( $_REQUEST['tab'] ) : '';
+
+		return 'sort' === $tab ? 'sort' : 'manage';
+	}
+
+	/**
 	 * Hook everything up.
 	 */
 	public function register() {
@@ -59,6 +99,7 @@ class PCP_Admin_Page {
 			'pcpManage',
 			array(
 				'confirmDelete' => __( 'Delete this category? It will be removed from any pages using it. This cannot be undone.', 'page-categories' ),
+				'unsavedWarn'   => __( 'You have unsaved category changes. Leave this page and lose them?', 'page-categories' ),
 			)
 		);
 	}
@@ -75,13 +116,10 @@ class PCP_Admin_Page {
 			wp_die( esc_html__( 'You are not allowed to manage page categories.', 'page-categories' ) );
 		}
 
-		$redirect = add_query_arg(
-			array(
-				'post_type' => 'page',
-				'page'      => self::MENU_SLUG,
-			),
-			admin_url( 'edit.php' )
-		);
+		$redirect = self::base_url();
+
+		// Sort tab submissions redirect and exit inside their own handler.
+		$this->sort_screen->handle_actions( $redirect );
 
 		// Add a new category.
 		if ( isset( $_POST['pcp_add'] ) ) {
@@ -130,10 +168,14 @@ class PCP_Admin_Page {
 		}
 
 		$messages = array(
-			'added'      => array( 'success', __( 'Category added.', 'page-categories' ) ),
-			'saved'      => array( 'success', __( 'Categories saved.', 'page-categories' ) ),
-			'deleted'    => array( 'success', __( 'Category deleted and removed from its pages.', 'page-categories' ) ),
-			'empty_name' => array( 'error', __( 'Please enter a category name.', 'page-categories' ) ),
+			'added'             => array( 'success', __( 'Category added.', 'page-categories' ) ),
+			'saved'             => array( 'success', __( 'Categories saved.', 'page-categories' ) ),
+			'deleted'           => array( 'success', __( 'Category deleted and removed from its pages.', 'page-categories' ) ),
+			'empty_name'        => array( 'error', __( 'Please enter a category name.', 'page-categories' ) ),
+			'assignments_saved' => array( 'success', __( 'Page categories updated.', 'page-categories' ) ),
+			'bulk_assigned'     => array( 'success', __( 'Selected pages were assigned.', 'page-categories' ) ),
+			'bulk_incomplete'   => array( 'error', __( 'Select at least one page and a category to assign.', 'page-categories' ) ),
+			'no_changes'        => array( 'info', __( 'No changes to save.', 'page-categories' ) ),
 		);
 
 		$key = sanitize_key( $_GET['pcp_msg'] );
@@ -153,11 +195,41 @@ class PCP_Admin_Page {
 	 * Render the management screen.
 	 */
 	public function render_page() {
-		$categories = PCP_Categories::get_all();
-		$counts     = PCP_Categories::get_usage_counts();
+		$tab      = $this->current_tab();
+		$base_url = self::base_url();
 		?>
 		<div class="wrap pcp-wrap">
 			<h1><?php esc_html_e( 'Page Categories', 'page-categories' ); ?></h1>
+
+			<nav class="nav-tab-wrapper wp-clearfix" aria-label="<?php esc_attr_e( 'Page Categories tabs', 'page-categories' ); ?>">
+				<a href="<?php echo esc_url( $base_url ); ?>" class="nav-tab<?php echo 'manage' === $tab ? ' nav-tab-active' : ''; ?>">
+					<?php esc_html_e( 'Manage Categories', 'page-categories' ); ?>
+				</a>
+				<a href="<?php echo esc_url( add_query_arg( 'tab', 'sort', $base_url ) ); ?>" class="nav-tab<?php echo 'sort' === $tab ? ' nav-tab-active' : ''; ?>">
+					<?php esc_html_e( 'Sort Pages', 'page-categories' ); ?>
+				</a>
+			</nav>
+
+			<?php
+			if ( 'sort' === $tab ) {
+				$this->sort_screen->render( $base_url );
+			} else {
+				$this->render_manage_tab( $base_url );
+			}
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render the category management tab.
+	 *
+	 * @param string $base_url Screen URL.
+	 */
+	private function render_manage_tab( $base_url ) {
+		$categories = PCP_Categories::get_all();
+		$counts     = PCP_Categories::get_usage_counts();
+		?>
 			<p class="description">
 				<?php esc_html_e( 'Internal categories for organizing Pages in the admin. These are never shown on your site and have no effect on taxonomies, URLs, or site structure.', 'page-categories' ); ?>
 			</p>
@@ -191,13 +263,15 @@ class PCP_Admin_Page {
 						<tbody id="pcp-cat-rows">
 							<?php foreach ( $categories as $category ) : ?>
 								<?php
-								$count      = isset( $counts[ $category['id'] ] ) ? $counts[ $category['id'] ] : 0;
+								$count = isset( $counts[ $category['id'] ] ) ? $counts[ $category['id'] ] : 0;
+
+								// Drill into this category on the Sort tab.
 								$filter_url = add_query_arg(
 									array(
-										'post_type'  => 'page',
-										'pcp_filter' => $category['id'],
+										'tab'     => 'sort',
+										'pcp_cat' => $category['id'],
 									),
-									admin_url( 'edit.php' )
+									$base_url
 								);
 								?>
 								<tr>
@@ -213,7 +287,9 @@ class PCP_Admin_Page {
 									<td><?php echo pcp_badge_html( $category ); // phpcs:ignore WordPress.Security.EscapeOutput -- badge builder escapes internally. ?></td>
 									<td class="pcp-col-count">
 										<?php if ( $count > 0 ) : ?>
-											<a href="<?php echo esc_url( $filter_url ); ?>"><?php echo (int) $count; ?></a>
+											<a href="<?php echo esc_url( $filter_url ); ?>" title="<?php esc_attr_e( 'View these pages on the Sort Pages tab', 'page-categories' ); ?>">
+												<?php echo (int) $count; ?>
+											</a>
 										<?php else : ?>
 											0
 										<?php endif; ?>
@@ -231,7 +307,6 @@ class PCP_Admin_Page {
 					<?php submit_button( __( 'Save Changes', 'page-categories' ), 'primary', 'pcp_save' ); ?>
 				</form>
 			<?php endif; ?>
-		</div>
 		<?php
 	}
 }

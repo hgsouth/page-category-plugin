@@ -211,6 +211,59 @@ class PCP_Categories {
 	}
 
 	/**
+	 * Statuses considered "live" for counting and listing purposes.
+	 *
+	 * @return string[]
+	 */
+	public static function listed_statuses() {
+		return array( 'publish', 'future', 'draft', 'pending', 'private' );
+	}
+
+	/**
+	 * Count pages that have no category assigned.
+	 *
+	 * Covers both a missing meta row and an empty/zero value.
+	 *
+	 * @return int
+	 */
+	public static function get_uncategorized_count() {
+		global $wpdb;
+
+		$statuses     = self::listed_statuses();
+		$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
+
+		$sql = "SELECT COUNT(*)
+				FROM {$wpdb->posts} p
+				LEFT JOIN {$wpdb->postmeta} pm
+					ON pm.post_id = p.ID AND pm.meta_key = %s
+				WHERE p.post_type = 'page'
+				  AND p.post_status IN ( {$placeholders} )
+				  AND ( pm.meta_value IS NULL OR pm.meta_value = '' OR pm.meta_value = '0' )";
+
+		$params = array_merge( array( self::META_KEY ), $statuses );
+
+		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.PreparedSQL -- placeholders built from a fixed status list.
+	}
+
+	/**
+	 * Count all pages in the listed statuses.
+	 *
+	 * @return int
+	 */
+	public static function get_total_page_count() {
+		$counts = wp_count_posts( 'page' );
+		$total  = 0;
+
+		foreach ( self::listed_statuses() as $status ) {
+			if ( isset( $counts->$status ) ) {
+				$total += (int) $counts->$status;
+			}
+		}
+
+		return $total;
+	}
+
+	/**
 	 * Get the category assigned to a page.
 	 *
 	 * @param int $post_id Page ID.

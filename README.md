@@ -9,12 +9,20 @@ These categories are purely an admin organization tool: they are **not** taxonom
 - **Color-coded badges** in a new "Category" column on the Pages list (`Pages → All Pages`).
 - **Sort** the Pages list by category — click the "Category" column header. Sorting follows the order you define on the management screen, and uncategorized pages stay in the list.
 - **Filter** the Pages list with a category dropdown (including an "Uncategorized" option).
-- **Management screen** at `Pages → Page Categories`:
-  - Add categories with a name and color (a sensible palette is suggested automatically).
-  - Rename and recolor inline with a live badge preview.
-  - Drag rows to reorder — this order drives the column sort.
-  - See how many pages use each category (linked to the filtered list).
-  - Delete a category (it's automatically cleared from any pages using it).
+- **Management screen** at `Pages → Page Categories`, split into two tabs:
+  - **Manage Categories** — add categories with a name and color (a sensible palette is suggested
+    automatically), rename and recolor inline with a live badge preview, drag rows to reorder (this
+    order drives the column sort), see how many pages use each category, and delete a category
+    (it's automatically cleared from any pages using it). Click a category's page count to jump
+    straight to those pages on the Sort tab.
+  - **Sort Pages** — an audit view listing every page. Click a category chip to filter down to it
+    (including an "Uncategorized" chip), search by title, and sort by title or last-modified date.
+    Pages are sorted **oldest edit first** by default so stale pages surface at the top.
+
+    Each row shows the page's category (as an editable dropdown), status, author, and how long ago
+    it was last modified, plus Edit / View / Trash actions. Retag pages with the per-row dropdowns
+    and hit **Save Assignments**, or tick several rows and use **Assign selected to…** to move them
+    all at once. Rows with unsaved changes are highlighted, and you're warned before navigating away.
 - **Assign categories** three ways:
   - A "Page Category (Internal)" box in the page editor sidebar (block and classic editors).
   - Quick Edit on the Pages list.
