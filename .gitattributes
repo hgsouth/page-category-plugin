@@ -1,0 +1,3 @@
+# Keep repo-only files out of zips built with git archive
+CLAUDE.md export-ignore
+.gitattributes export-ignore
