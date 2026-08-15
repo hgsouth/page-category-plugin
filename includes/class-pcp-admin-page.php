@@ -253,9 +253,9 @@ class PCP_Admin_Page {
 						<thead>
 							<tr>
 								<th class="pcp-col-drag"><span class="screen-reader-text"><?php esc_html_e( 'Reorder', 'page-categories' ); ?></span></th>
-								<th><?php esc_html_e( 'Name', 'page-categories' ); ?></th>
+								<th class="pcp-col-name"><?php esc_html_e( 'Name', 'page-categories' ); ?></th>
 								<th class="pcp-col-color"><?php esc_html_e( 'Color', 'page-categories' ); ?></th>
-								<th><?php esc_html_e( 'Preview', 'page-categories' ); ?></th>
+								<th class="pcp-col-preview"><?php esc_html_e( 'Preview', 'page-categories' ); ?></th>
 								<th class="pcp-col-count"><?php esc_html_e( 'Pages', 'page-categories' ); ?></th>
 								<th class="pcp-col-actions"><?php esc_html_e( 'Actions', 'page-categories' ); ?></th>
 							</tr>

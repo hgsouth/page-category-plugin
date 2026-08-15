@@ -31,11 +31,27 @@
 }
 
 .pcp-table {
-	max-width: 800px;
+	max-width: 860px;
 }
 
 .pcp-table td {
 	vertical-align: middle;
+}
+
+.pcp-col-name {
+	width: 38%;
+}
+
+/* regular-text has a fixed width that overflows a fixed-layout column;
+   size the input to its cell instead. */
+.pcp-table input[type="text"].pcp-name-input {
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+.pcp-col-preview {
+	overflow: hidden;
 }
 
 .pcp-col-drag {
