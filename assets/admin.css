@@ -31,7 +31,7 @@
 }
 
 .pcp-table {
-	max-width: 860px;
+	max-width: 1000px;
 }
 
 .pcp-table td {
@@ -39,7 +39,7 @@
 }
 
 .pcp-col-name {
-	width: 38%;
+	width: 30%;
 }
 
 /* regular-text has a fixed width that overflows a fixed-layout column;
@@ -52,6 +52,17 @@
 
 .pcp-col-preview {
 	overflow: hidden;
+}
+
+/* Give long badge names room; wrap instead of truncating if they still overflow. */
+.pcp-table .pcp-col-preview .pcp-badge,
+.pcp-table td .pcp-badge {
+	white-space: normal;
+	overflow: visible;
+	text-overflow: clip;
+	line-height: 1.5;
+	padding-top: 4px;
+	padding-bottom: 4px;
 }
 
 .pcp-col-drag {

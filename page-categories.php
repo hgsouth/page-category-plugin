@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Page Categories (Internal)
  * Description:       Internal-only, color-coded categories for Pages. Tag, sort, and filter pages in the admin without touching taxonomies or site structure.
- * Version:           1.1.2
+ * Version:           1.1.3
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            hgsouth
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PCP_VERSION', '1.1.2' );
+define( 'PCP_VERSION', '1.1.3' );
 define( 'PCP_PLUGIN_FILE', __FILE__ );
 define( 'PCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
