@@ -112,8 +112,9 @@ class PCP_Categories {
 			'color' => $color,
 		);
 
-		update_option( self::OPTION_KEY, $categories );
-		update_option( self::NEXT_ID_KEY, $id + 1 );
+		// Admin-only data: never autoload on front-end requests.
+		update_option( self::OPTION_KEY, $categories, false );
+		update_option( self::NEXT_ID_KEY, $id + 1, false );
 
 		return $id;
 	}
@@ -154,7 +155,7 @@ class PCP_Categories {
 			);
 		}
 
-		update_option( self::OPTION_KEY, $updated );
+		update_option( self::OPTION_KEY, $updated, false );
 	}
 
 	/**
@@ -173,7 +174,7 @@ class PCP_Categories {
 			}
 		}
 
-		update_option( self::OPTION_KEY, $categories );
+		update_option( self::OPTION_KEY, $categories, false );
 
 		// Remove the assignment from every page that used this category.
 		delete_metadata( 'post', 0, self::META_KEY, (string) $id, true );
@@ -187,17 +188,20 @@ class PCP_Categories {
 	public static function get_usage_counts() {
 		global $wpdb;
 
+		// Same status list the Sort tab queries, so chip counts match the rows shown.
+		$statuses     = self::listed_statuses();
+		$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
+
+		$sql = "SELECT pm.meta_value AS category_id, COUNT(*) AS total
+				FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				WHERE pm.meta_key = %s
+				  AND p.post_type = 'page'
+				  AND p.post_status IN ( {$placeholders} )
+				GROUP BY pm.meta_value";
+
 		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT pm.meta_value AS category_id, COUNT(*) AS total
-				 FROM {$wpdb->postmeta} pm
-				 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-				 WHERE pm.meta_key = %s
-				   AND p.post_type = 'page'
-				   AND p.post_status NOT IN ( 'trash', 'auto-draft' )
-				 GROUP BY pm.meta_value",
-				self::META_KEY
-			),
+			$wpdb->prepare( $sql, array_merge( array( self::META_KEY ), $statuses ) ), // phpcs:ignore WordPress.DB.PreparedSQL -- placeholders built from a fixed status list.
 			ARRAY_A
 		);
 

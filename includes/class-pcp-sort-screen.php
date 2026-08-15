@@ -144,8 +144,11 @@ class PCP_Sort_Screen {
 			? sanitize_text_field( wp_unslash( $_REQUEST['pcp_cat'] ) )
 			: '';
 
-		if ( 'none' === $category || ( '' !== $category && (int) $category > 0 ) ) {
-			$args['pcp_cat'] = $category;
+		if ( 'none' === $category ) {
+			$args['pcp_cat'] = 'none';
+		} elseif ( '' !== $category && (int) $category > 0 ) {
+			// Canonical form so URLs and active-chip comparisons stay clean.
+			$args['pcp_cat'] = (string) (int) $category;
 		}
 
 		$search = isset( $_REQUEST['pcp_s'] ) && is_string( $_REQUEST['pcp_s'] )
@@ -266,6 +269,16 @@ class PCP_Sort_Screen {
 		$active_cat = isset( $args['pcp_cat'] ) ? $args['pcp_cat'] : '';
 		$search     = isset( $args['pcp_s'] ) ? $args['pcp_s'] : '';
 		$query      = $this->build_query();
+
+		// Prime the user cache in one query so the Author column doesn't
+		// trigger a lookup per row.
+		if ( $query->have_posts() && function_exists( 'cache_users' ) ) {
+			$author_ids = array_unique( array_map( 'intval', wp_list_pluck( $query->posts, 'post_author' ) ) );
+
+			if ( ! empty( $author_ids ) ) {
+				cache_users( $author_ids );
+			}
+		}
 		?>
 		<p class="description">
 			<?php esc_html_e( 'Browse every page, filter by category, and retag or retire pages that are out of date. Sorted by oldest edit first so stale pages surface at the top.', 'page-categories' ); ?>
@@ -300,6 +313,8 @@ class PCP_Sort_Screen {
 
 		<form method="post" id="pcp-sort-form">
 			<?php wp_nonce_field( 'pcp_sort_pages', 'pcp_sort_nonce' ); ?>
+			<?php // Make Save Assignments the implicit-submission default so Enter never triggers the bulk Apply button. ?>
+			<button type="submit" name="pcp_save_assignments" value="1" class="pcp-default-submit" tabindex="-1" aria-hidden="true"></button>
 
 			<div class="tablenav top">
 				<div class="alignleft actions">

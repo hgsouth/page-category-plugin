@@ -163,7 +163,20 @@ class PCP_Admin_Page {
 	public function render_notices() {
 		$screen = get_current_screen();
 
-		if ( ! $screen || 'pages_page_' . self::MENU_SLUG !== $screen->id || ! isset( $_GET['pcp_msg'] ) ) {
+		if ( ! $screen || 'pages_page_' . self::MENU_SLUG !== $screen->id ) {
+			return;
+		}
+
+		// Core's post.php redirects back here with trashed=N after a Trash
+		// action on the Sort tab; acknowledge it like the Pages list does.
+		if ( isset( $_GET['trashed'] ) && is_scalar( $_GET['trashed'] ) && (int) $_GET['trashed'] > 0 ) {
+			printf(
+				'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+				esc_html__( 'Page moved to the Trash.', 'page-categories' )
+			);
+		}
+
+		if ( ! isset( $_GET['pcp_msg'] ) ) {
 			return;
 		}
 
@@ -249,6 +262,8 @@ class PCP_Admin_Page {
 			<?php else : ?>
 				<form method="post">
 					<?php wp_nonce_field( 'pcp_manage_categories', 'pcp_manage_nonce' ); ?>
+					<?php // First submit in the form is the implicit-submission default; without this, Enter in a name field would hit a row's Delete button. ?>
+					<button type="submit" name="pcp_save" value="1" class="pcp-default-submit" tabindex="-1" aria-hidden="true"></button>
 					<table class="wp-list-table widefat fixed striped pcp-table">
 						<thead>
 							<tr>

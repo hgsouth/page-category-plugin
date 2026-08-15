@@ -107,6 +107,18 @@ input[type="color"].pcp-color-input,
 	color: #8a2424;
 }
 
+/* Off-screen default submit so Enter saves instead of hitting Delete/Apply.
+   Kept visible-to-layout (not display:none) so browsers use it for implicit submission. */
+.pcp-default-submit {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+}
+
 /* ---- Sort Pages tab ---- */
 
 .pcp-wrap .nav-tab-wrapper {
