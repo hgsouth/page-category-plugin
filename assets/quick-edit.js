@@ -27,10 +27,10 @@
 			}
 
 			var current = $( '#post-' + postId )
-				.find( '.pcp-cat-value' )
-				.data( 'pcpCategory' );
+				.find( '.eps-cat-value' )
+				.data( 'epsCategory' );
 
-			$( 'select[name="pcp_quick_category"]', '#edit-' + postId ).val(
+			$( 'select[name="eps_quick_category"]', '#edit-' + postId ).val(
 				String( current || 0 )
 			);
 		};

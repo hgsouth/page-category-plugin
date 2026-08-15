@@ -10,11 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class PCP_Categories {
+class EPS_Categories {
 
-	const OPTION_KEY      = 'pcp_categories';
-	const NEXT_ID_KEY     = 'pcp_next_category_id';
-	const META_KEY        = '_pcp_page_category';
+	const OPTION_KEY      = 'eps_categories';
+	const NEXT_ID_KEY     = 'eps_next_category_id';
+	const META_KEY        = '_eps_page_category';
 	const MAX_NAME_LENGTH = 100;
 
 	/**
@@ -94,7 +94,7 @@ class PCP_Categories {
 		$name = mb_substr( $name, 0, self::MAX_NAME_LENGTH );
 
 		if ( '' === $name ) {
-			return new WP_Error( 'pcp_empty_name', __( 'Category name cannot be empty.', 'page-categories' ) );
+			return new WP_Error( 'eps_empty_name', __( 'Category name cannot be empty.', 'easy-page-sorting' ) );
 		}
 
 		$categories = self::get_all();

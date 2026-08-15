@@ -1,5 +1,5 @@
 /* Category badge (Pages list + management screen) */
-.pcp-badge {
+.eps-badge {
 	display: inline-block;
 	padding: 2px 10px;
 	border-radius: 999px;
@@ -13,50 +13,50 @@
 	vertical-align: middle;
 }
 
-.pcp-none {
+.eps-none {
 	color: #8c8f94;
 }
 
 /* Pages list column */
-.fixed .column-pcp_category {
+.fixed .column-eps_category {
 	width: 12%;
 }
 
 /* Management screen */
-.pcp-add-form {
+.eps-add-form {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	margin-bottom: 1.5em;
 }
 
-.pcp-table {
+.eps-table {
 	max-width: 1000px;
 }
 
-.pcp-table td {
+.eps-table td {
 	vertical-align: middle;
 }
 
-.pcp-col-name {
+.eps-col-name {
 	width: 30%;
 }
 
 /* regular-text has a fixed width that overflows a fixed-layout column;
    size the input to its cell instead. */
-.pcp-table input[type="text"].pcp-name-input {
+.eps-table input[type="text"].eps-name-input {
 	width: 100%;
 	max-width: 100%;
 	box-sizing: border-box;
 }
 
-.pcp-col-preview {
+.eps-col-preview {
 	overflow: hidden;
 }
 
 /* Give long badge names room; wrap instead of truncating if they still overflow. */
-.pcp-table .pcp-col-preview .pcp-badge,
-.pcp-table td .pcp-badge {
+.eps-table .eps-col-preview .eps-badge,
+.eps-table td .eps-badge {
 	white-space: normal;
 	overflow: visible;
 	text-overflow: clip;
@@ -65,47 +65,47 @@
 	padding-bottom: 4px;
 }
 
-.pcp-col-drag {
+.eps-col-drag {
 	width: 36px;
 	text-align: center;
 }
 
-.pcp-col-color {
+.eps-col-color {
 	width: 70px;
 }
 
-.pcp-col-count {
+.eps-col-count {
 	width: 70px;
 }
 
-.pcp-col-actions {
+.eps-col-actions {
 	width: 90px;
 }
 
-.pcp-drag-handle {
+.eps-drag-handle {
 	cursor: grab;
 	color: #8c8f94;
 }
 
-.pcp-drag-handle:hover {
+.eps-drag-handle:hover {
 	color: #2271b1;
 }
 
-.pcp-sortable-placeholder {
+.eps-sortable-placeholder {
 	background: #f0f6fc;
 	border: 1px dashed #2271b1;
 	height: 44px;
 }
 
-input[type="color"].pcp-color-input,
-.pcp-add-form input[type="color"] {
+input[type="color"].eps-color-input,
+.eps-add-form input[type="color"] {
 	width: 44px;
 	height: 30px;
 	padding: 2px;
 	cursor: pointer;
 }
 
-.pcp-delete-btn {
+.eps-delete-btn {
 	color: #b32d2e;
 	cursor: pointer;
 	background: none;
@@ -114,13 +114,13 @@ input[type="color"].pcp-color-input,
 	text-decoration: underline;
 }
 
-.pcp-delete-btn:hover {
+.eps-delete-btn:hover {
 	color: #8a2424;
 }
 
 /* Off-screen default submit so Enter saves instead of hitting Delete/Apply.
    Kept visible-to-layout (not display:none) so browsers use it for implicit submission. */
-.pcp-default-submit {
+.eps-default-submit {
 	position: absolute;
 	left: -9999px;
 	width: 1px;
@@ -132,19 +132,19 @@ input[type="color"].pcp-color-input,
 
 /* ---- Sort Pages tab ---- */
 
-.pcp-wrap .nav-tab-wrapper {
+.eps-wrap .nav-tab-wrapper {
 	margin-bottom: 1em;
 }
 
 /* Category filter chips */
-.pcp-chips {
+.eps-chips {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
 	margin: 1em 0;
 }
 
-.pcp-chip {
+.eps-chip {
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
@@ -158,24 +158,24 @@ input[type="color"].pcp-color-input,
 	text-decoration: none;
 }
 
-.pcp-chip:hover {
+.eps-chip:hover {
 	border-color: #2271b1;
 	background: #f0f6fc;
 	color: #2271b1;
 }
 
-.pcp-chip-active {
+.eps-chip-active {
 	border-color: #2271b1;
 	background: #2271b1;
 	color: #fff;
 }
 
-.pcp-chip-active:hover {
+.eps-chip-active:hover {
 	background: #135e96;
 	color: #fff;
 }
 
-.pcp-chip-dot {
+.eps-chip-dot {
 	width: 10px;
 	height: 10px;
 	border-radius: 50%;
@@ -183,12 +183,12 @@ input[type="color"].pcp-color-input,
 	box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.12 );
 }
 
-.pcp-chip-count {
+.eps-chip-count {
 	opacity: 0.7;
 	font-size: 12px;
 }
 
-.pcp-search-form {
+.eps-search-form {
 	display: flex;
 	align-items: center;
 	gap: 8px;
@@ -196,37 +196,37 @@ input[type="color"].pcp-color-input,
 }
 
 /* Sort table columns */
-.pcp-sort-table .pcp-col-cat {
+.eps-sort-table .eps-col-cat {
 	width: 16%;
 }
 
-.pcp-sort-table .pcp-col-status {
+.eps-sort-table .eps-col-status {
 	width: 10%;
 }
 
-.pcp-sort-table .pcp-col-author {
+.eps-sort-table .eps-col-author {
 	width: 12%;
 }
 
-.pcp-sort-table .pcp-col-modified {
+.eps-sort-table .eps-col-modified {
 	width: 14%;
 }
 
-.pcp-sort-table .pcp-row-select {
+.eps-sort-table .eps-row-select {
 	width: 100%;
 	max-width: 100%;
 }
 
 /* Rows with unsaved category changes */
-.pcp-sort-table tr.pcp-row-dirty > * {
+.eps-sort-table tr.eps-row-dirty > * {
 	background-color: #fcf9e8;
 }
 
-.pcp-sort-table tr.pcp-row-dirty .pcp-row-select {
+.eps-sort-table tr.eps-row-dirty .eps-row-select {
 	border-color: #dba617;
 }
 
-.pcp-unsaved-note {
+.eps-unsaved-note {
 	margin-left: 10px;
 	color: #996800;
 	font-style: italic;
@@ -234,7 +234,7 @@ input[type="color"].pcp-color-input,
 
 /* Keep row actions visible on touch devices */
 @media screen and ( max-width: 782px ) {
-	.pcp-sort-table .row-actions {
+	.eps-sort-table .row-actions {
 		position: static;
 		left: auto;
 		padding: 2px 0 0;

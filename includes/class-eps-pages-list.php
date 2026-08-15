@@ -8,9 +8,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class PCP_Pages_List {
+class EPS_Pages_List {
 
-	const COLUMN_KEY = 'pcp_category';
+	const COLUMN_KEY = 'eps_category';
 
 	/**
 	 * Hook everything up.
@@ -48,8 +48,8 @@ class PCP_Pages_List {
 			return;
 		}
 
-		wp_enqueue_style( 'pcp-admin', PCP_PLUGIN_URL . 'assets/admin.css', array(), PCP_VERSION );
-		wp_enqueue_script( 'pcp-quick-edit', PCP_PLUGIN_URL . 'assets/quick-edit.js', array( 'jquery', 'inline-edit-post' ), PCP_VERSION, true );
+		wp_enqueue_style( 'eps-admin', EPS_PLUGIN_URL . 'assets/admin.css', array(), EPS_VERSION );
+		wp_enqueue_script( 'eps-quick-edit', EPS_PLUGIN_URL . 'assets/quick-edit.js', array( 'jquery', 'inline-edit-post' ), EPS_VERSION, true );
 	}
 
 	/**
@@ -65,13 +65,13 @@ class PCP_Pages_List {
 			$new[ $key ] = $label;
 
 			if ( 'title' === $key ) {
-				$new[ self::COLUMN_KEY ] = __( 'Category', 'page-categories' );
+				$new[ self::COLUMN_KEY ] = __( 'Category', 'easy-page-sorting' );
 			}
 		}
 
 		// If there was no title column for some reason, still add ours.
 		if ( ! isset( $new[ self::COLUMN_KEY ] ) ) {
-			$new[ self::COLUMN_KEY ] = __( 'Category', 'page-categories' );
+			$new[ self::COLUMN_KEY ] = __( 'Category', 'easy-page-sorting' );
 		}
 
 		return $new;
@@ -88,17 +88,17 @@ class PCP_Pages_List {
 			return;
 		}
 
-		$category_id = PCP_Categories::get_for_page( $post_id );
-		$category    = $category_id ? PCP_Categories::get( $category_id ) : null;
+		$category_id = EPS_Categories::get_for_page( $post_id );
+		$category    = $category_id ? EPS_Categories::get( $category_id ) : null;
 
 		if ( $category ) {
 			printf(
-				'<span class="pcp-cat-value" data-pcp-category="%1$d">%2$s</span>',
+				'<span class="eps-cat-value" data-eps-category="%1$d">%2$s</span>',
 				(int) $category['id'],
-				pcp_badge_html( $category ) // phpcs:ignore WordPress.Security.EscapeOutput -- badge builder escapes internally.
+				eps_badge_html( $category ) // phpcs:ignore WordPress.Security.EscapeOutput -- badge builder escapes internally.
 			);
 		} else {
-			echo '<span class="pcp-cat-value pcp-none" data-pcp-category="0" aria-hidden="true">&#8212;</span>';
+			echo '<span class="eps-cat-value eps-none" data-eps-category="0" aria-hidden="true">&#8212;</span>';
 		}
 	}
 
@@ -124,23 +124,23 @@ class PCP_Pages_List {
 			return;
 		}
 
-		$categories = PCP_Categories::get_all();
+		$categories = EPS_Categories::get_all();
 
 		if ( empty( $categories ) ) {
 			return;
 		}
 
-		$current = isset( $_GET['pcp_filter'] ) && is_string( $_GET['pcp_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['pcp_filter'] ) ) : '';
+		$current = isset( $_GET['eps_filter'] ) && is_string( $_GET['eps_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['eps_filter'] ) ) : '';
 		?>
-		<label class="screen-reader-text" for="pcp-filter"><?php esc_html_e( 'Filter by page category', 'page-categories' ); ?></label>
-		<select name="pcp_filter" id="pcp-filter">
-			<option value=""><?php esc_html_e( 'All page categories', 'page-categories' ); ?></option>
+		<label class="screen-reader-text" for="eps-filter"><?php esc_html_e( 'Filter by page category', 'easy-page-sorting' ); ?></label>
+		<select name="eps_filter" id="eps-filter">
+			<option value=""><?php esc_html_e( 'All page categories', 'easy-page-sorting' ); ?></option>
 			<?php foreach ( $categories as $category ) : ?>
 				<option value="<?php echo (int) $category['id']; ?>" <?php selected( $current, (string) $category['id'] ); ?>>
 					<?php echo esc_html( $category['name'] ); ?>
 				</option>
 			<?php endforeach; ?>
-			<option value="none" <?php selected( $current, 'none' ); ?>><?php esc_html_e( '— Uncategorized —', 'page-categories' ); ?></option>
+			<option value="none" <?php selected( $current, 'none' ); ?>><?php esc_html_e( '— Uncategorized —', 'easy-page-sorting' ); ?></option>
 		</select>
 		<?php
 	}
@@ -162,19 +162,19 @@ class PCP_Pages_List {
 		}
 
 		// Filtering.
-		$filter = isset( $_GET['pcp_filter'] ) && is_string( $_GET['pcp_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['pcp_filter'] ) ) : '';
+		$filter = isset( $_GET['eps_filter'] ) && is_string( $_GET['eps_filter'] ) ? sanitize_text_field( wp_unslash( $_GET['eps_filter'] ) ) : '';
 
 		if ( 'none' === $filter ) {
 			$meta_query   = (array) $query->get( 'meta_query' );
 			$meta_query[] = array(
-				'key'     => PCP_Categories::META_KEY,
+				'key'     => EPS_Categories::META_KEY,
 				'compare' => 'NOT EXISTS',
 			);
 			$query->set( 'meta_query', $meta_query );
 		} elseif ( '' !== $filter && (int) $filter > 0 ) {
 			$meta_query   = (array) $query->get( 'meta_query' );
 			$meta_query[] = array(
-				'key'   => PCP_Categories::META_KEY,
+				'key'   => EPS_Categories::META_KEY,
 				'value' => (string) (int) $filter,
 			);
 			$query->set( 'meta_query', $meta_query );
@@ -184,7 +184,7 @@ class PCP_Pages_List {
 		// without a category are still included and the user-defined category
 		// order is respected.
 		if ( self::COLUMN_KEY === $query->get( 'orderby' ) ) {
-			$query->set( 'pcp_orderby_category', true );
+			$query->set( 'eps_orderby_category', true );
 		}
 	}
 
@@ -197,7 +197,7 @@ class PCP_Pages_List {
 	 * @return array
 	 */
 	public function sort_by_category_order( $clauses, $query ) {
-		if ( ! $query->get( 'pcp_orderby_category' ) ) {
+		if ( ! $query->get( 'eps_orderby_category' ) ) {
 			return $clauses;
 		}
 
@@ -207,17 +207,17 @@ class PCP_Pages_List {
 		$order = 'DESC' === $order ? 'DESC' : 'ASC';
 
 		$clauses['join'] .= $wpdb->prepare(
-			" LEFT JOIN {$wpdb->postmeta} pcp_pm ON pcp_pm.post_id = {$wpdb->posts}.ID AND pcp_pm.meta_key = %s ",
-			PCP_Categories::META_KEY
+			" LEFT JOIN {$wpdb->postmeta} eps_pm ON eps_pm.post_id = {$wpdb->posts}.ID AND eps_pm.meta_key = %s ",
+			EPS_Categories::META_KEY
 		);
 
-		$ids = array_map( 'intval', wp_list_pluck( PCP_Categories::get_all(), 'id' ) );
+		$ids = array_map( 'intval', wp_list_pluck( EPS_Categories::get_all(), 'id' ) );
 
 		if ( ! empty( $ids ) ) {
 			// FIELD() returns 0 for values not in the list, so uncategorized
 			// pages (and orphaned values) group together before/after the rest.
 			$field_list          = implode( ',', $ids );
-			$clauses['orderby']  = "FIELD( IFNULL( pcp_pm.meta_value, 0 ), {$field_list} ) {$order}, {$wpdb->posts}.post_title ASC";
+			$clauses['orderby']  = "FIELD( IFNULL( eps_pm.meta_value, 0 ), {$field_list} ) {$order}, {$wpdb->posts}.post_title ASC";
 		} else {
 			$clauses['orderby'] = "{$wpdb->posts}.post_title ASC";
 		}
@@ -236,13 +236,13 @@ class PCP_Pages_List {
 			return;
 		}
 		?>
-		<fieldset class="inline-edit-col-right pcp-quick-edit">
+		<fieldset class="inline-edit-col-right eps-quick-edit">
 			<div class="inline-edit-col">
 				<label>
-					<span class="title"><?php esc_html_e( 'Category', 'page-categories' ); ?></span>
-					<select name="pcp_quick_category">
-						<option value="0"><?php esc_html_e( '— None —', 'page-categories' ); ?></option>
-						<?php foreach ( PCP_Categories::get_all() as $category ) : ?>
+					<span class="title"><?php esc_html_e( 'Category', 'easy-page-sorting' ); ?></span>
+					<select name="eps_quick_category">
+						<option value="0"><?php esc_html_e( '— None —', 'easy-page-sorting' ); ?></option>
+						<?php foreach ( EPS_Categories::get_all() as $category ) : ?>
 							<option value="<?php echo (int) $category['id']; ?>"><?php echo esc_html( $category['name'] ); ?></option>
 						<?php endforeach; ?>
 					</select>
@@ -263,14 +263,14 @@ class PCP_Pages_List {
 			return;
 		}
 		?>
-		<fieldset class="inline-edit-col-right pcp-bulk-edit">
+		<fieldset class="inline-edit-col-right eps-bulk-edit">
 			<div class="inline-edit-col">
 				<label>
-					<span class="title"><?php esc_html_e( 'Category', 'page-categories' ); ?></span>
-					<select name="pcp_bulk_category">
-						<option value=""><?php esc_html_e( '— No Change —', 'page-categories' ); ?></option>
-						<option value="0"><?php esc_html_e( '— None —', 'page-categories' ); ?></option>
-						<?php foreach ( PCP_Categories::get_all() as $category ) : ?>
+					<span class="title"><?php esc_html_e( 'Category', 'easy-page-sorting' ); ?></span>
+					<select name="eps_bulk_category">
+						<option value=""><?php esc_html_e( '— No Change —', 'easy-page-sorting' ); ?></option>
+						<option value="0"><?php esc_html_e( '— None —', 'easy-page-sorting' ); ?></option>
+						<?php foreach ( EPS_Categories::get_all() as $category ) : ?>
 							<option value="<?php echo (int) $category['id']; ?>"><?php echo esc_html( $category['name'] ); ?></option>
 						<?php endforeach; ?>
 					</select>
@@ -287,8 +287,8 @@ class PCP_Pages_List {
 	 * @param int $post_id Page ID.
 	 */
 	public function save_quick_edit( $post_id ) {
-		if ( ! isset( $_POST['pcp_quick_category'], $_POST['_inline_edit'] )
-			|| ! is_scalar( $_POST['pcp_quick_category'] )
+		if ( ! isset( $_POST['eps_quick_category'], $_POST['_inline_edit'] )
+			|| ! is_scalar( $_POST['eps_quick_category'] )
 			|| ! is_string( $_POST['_inline_edit'] )
 		) {
 			return;
@@ -306,7 +306,7 @@ class PCP_Pages_List {
 			return;
 		}
 
-		PCP_Categories::set_for_page( $post_id, (int) $_POST['pcp_quick_category'] );
+		EPS_Categories::set_for_page( $post_id, (int) $_POST['eps_quick_category'] );
 	}
 
 	/**
@@ -316,21 +316,21 @@ class PCP_Pages_List {
 	 * @param array $shared_post_data Submitted bulk edit data.
 	 */
 	public function save_bulk_edit( $post_ids, $shared_post_data ) {
-		if ( ! isset( $shared_post_data['pcp_bulk_category'] )
-			|| ! is_scalar( $shared_post_data['pcp_bulk_category'] )
-			|| '' === $shared_post_data['pcp_bulk_category']
+		if ( ! isset( $shared_post_data['eps_bulk_category'] )
+			|| ! is_scalar( $shared_post_data['eps_bulk_category'] )
+			|| '' === $shared_post_data['eps_bulk_category']
 		) {
 			return;
 		}
 
-		$category_id = (int) $shared_post_data['pcp_bulk_category'];
+		$category_id = (int) $shared_post_data['eps_bulk_category'];
 
 		foreach ( (array) $post_ids as $post_id ) {
 			if ( 'page' !== get_post_type( $post_id ) || ! current_user_can( 'edit_page', $post_id ) ) {
 				continue;
 			}
 
-			PCP_Categories::set_for_page( $post_id, $category_id );
+			EPS_Categories::set_for_page( $post_id, $category_id );
 		}
 	}
 }

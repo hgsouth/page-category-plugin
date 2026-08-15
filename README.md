@@ -44,12 +44,25 @@ To update, use either:
 - **Upload the new zip** (WordPress 5.5+): `Plugins → Add New → Upload Plugin`, choose the zip, and
   when WordPress says the plugin already exists click **Replace current with uploaded**. It compares
   versions, swaps the files, and leaves your data alone.
-- **Overwrite over SFTP/FTP**: replace the contents of `wp-content/plugins/page-categories/` with the
+- **Overwrite over SFTP/FTP**: replace the contents of `wp-content/plugins/easy-page-sorting/` with the
   new files. Delete any files that no longer exist in the new version.
 
-The zip's top-level folder must keep the same name as the installed folder (`page-categories`).
+The zip's top-level folder must keep the same name as the installed folder (`easy-page-sorting`).
 If the folder name changes, WordPress treats it as a separate plugin and you'll end up with two
 copies installed.
+
+### Switching from the old "Page Categories" install (folder `page-categories`)
+
+Version 2.0.0 renamed the plugin's folder, files, and internal keys. WordPress therefore sees it
+as a new plugin, so the switch is a one-time install rather than an in-place update. **Order
+matters** — the old copy's uninstall routine deletes the legacy data the migration reads:
+
+1. **Deactivate** the old plugin (do **not** delete it yet).
+2. Upload and **activate** this version. Your categories and page assignments migrate to the new
+   storage keys automatically the first time it loads.
+3. Confirm your categories appear under `Pages → Easy Page Sorting`.
+4. Now **delete** the old plugin from the Plugins screen. This is safe after migration: its
+   cleanup only targets the legacy keys, which are already empty.
 
 ## Requirements
 
@@ -58,7 +71,7 @@ copies installed.
 
 ## How it stores data
 
-- Categories (name, color, order) are stored in a single option: `pcp_categories`.
-- A page's assignment is stored in hidden post meta: `_pcp_page_category`.
+- Categories (name, color, order) are stored in a single option: `eps_categories`.
+- A page's assignment is stored in hidden post meta: `_eps_page_category`.
 - Managing categories requires the `manage_options` capability (administrators); assigning a category to a page requires permission to edit that page.
 - `uninstall.php` deletes the options and all assignment meta when the plugin is deleted.

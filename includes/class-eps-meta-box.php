@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class PCP_Meta_Box {
+class EPS_Meta_Box {
 
 	/**
 	 * Hook everything up.
@@ -23,8 +23,8 @@ class PCP_Meta_Box {
 	 */
 	public function add_meta_box() {
 		add_meta_box(
-			'pcp-page-category',
-			__( 'Page Category (Internal)', 'page-categories' ),
+			'eps-page-category',
+			__( 'Page Category (Internal)', 'easy-page-sorting' ),
 			array( $this, 'render' ),
 			'page',
 			'side',
@@ -38,31 +38,31 @@ class PCP_Meta_Box {
 	 * @param WP_Post $post Current page.
 	 */
 	public function render( $post ) {
-		$categories = PCP_Categories::get_all();
-		$current    = PCP_Categories::get_for_page( $post->ID );
+		$categories = EPS_Categories::get_all();
+		$current    = EPS_Categories::get_for_page( $post->ID );
 
-		wp_nonce_field( 'pcp_save_meta_box', 'pcp_meta_box_nonce' );
+		wp_nonce_field( 'eps_save_meta_box', 'eps_meta_box_nonce' );
 
 		if ( empty( $categories ) ) {
 			printf(
 				'<p>%s <a href="%s">%s</a></p>',
-				esc_html__( 'No categories yet.', 'page-categories' ),
-				esc_url( admin_url( 'edit.php?post_type=page&page=' . PCP_Admin_Page::MENU_SLUG ) ),
-				esc_html__( 'Create one', 'page-categories' )
+				esc_html__( 'No categories yet.', 'easy-page-sorting' ),
+				esc_url( admin_url( 'edit.php?post_type=page&page=' . EPS_Admin_Page::MENU_SLUG ) ),
+				esc_html__( 'Create one', 'easy-page-sorting' )
 			);
 			return;
 		}
 		?>
-		<label class="screen-reader-text" for="pcp-meta-category"><?php esc_html_e( 'Page category', 'page-categories' ); ?></label>
-		<select name="pcp_meta_category" id="pcp-meta-category" style="width:100%;">
-			<option value="0"><?php esc_html_e( '— None —', 'page-categories' ); ?></option>
+		<label class="screen-reader-text" for="eps-meta-category"><?php esc_html_e( 'Page category', 'easy-page-sorting' ); ?></label>
+		<select name="eps_meta_category" id="eps-meta-category" style="width:100%;">
+			<option value="0"><?php esc_html_e( '— None —', 'easy-page-sorting' ); ?></option>
 			<?php foreach ( $categories as $category ) : ?>
 				<option value="<?php echo (int) $category['id']; ?>" <?php selected( $current, $category['id'] ); ?>>
 					<?php echo esc_html( $category['name'] ); ?>
 				</option>
 			<?php endforeach; ?>
 		</select>
-		<p class="description"><?php esc_html_e( 'Internal only — never shown on the site.', 'page-categories' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Internal only — never shown on the site.', 'easy-page-sorting' ); ?></p>
 		<?php
 	}
 
@@ -72,14 +72,14 @@ class PCP_Meta_Box {
 	 * @param int $post_id Page ID.
 	 */
 	public function save( $post_id ) {
-		if ( ! isset( $_POST['pcp_meta_category'], $_POST['pcp_meta_box_nonce'] )
-			|| ! is_scalar( $_POST['pcp_meta_category'] )
-			|| ! is_string( $_POST['pcp_meta_box_nonce'] )
+		if ( ! isset( $_POST['eps_meta_category'], $_POST['eps_meta_box_nonce'] )
+			|| ! is_scalar( $_POST['eps_meta_category'] )
+			|| ! is_string( $_POST['eps_meta_box_nonce'] )
 		) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pcp_meta_box_nonce'] ) ), 'pcp_save_meta_box' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['eps_meta_box_nonce'] ) ), 'eps_save_meta_box' ) ) {
 			return;
 		}
 
@@ -91,6 +91,6 @@ class PCP_Meta_Box {
 			return;
 		}
 
-		PCP_Categories::set_for_page( $post_id, (int) $_POST['pcp_meta_category'] );
+		EPS_Categories::set_for_page( $post_id, (int) $_POST['eps_meta_category'] );
 	}
 }
