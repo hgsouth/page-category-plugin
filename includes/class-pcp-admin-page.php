@@ -69,8 +69,8 @@ class PCP_Admin_Page {
 	public function add_menu() {
 		$hook = add_submenu_page(
 			'edit.php?post_type=page',
-			__( 'Page Categories', 'page-categories' ),
-			__( 'Page Categories', 'page-categories' ),
+			__( 'Easy Page Sorting', 'page-categories' ),
+			__( 'Easy Page Sorting', 'page-categories' ),
 			self::CAPABILITY,
 			self::MENU_SLUG,
 			array( $this, 'render_page' )
@@ -212,9 +212,9 @@ class PCP_Admin_Page {
 		$base_url = self::base_url();
 		?>
 		<div class="wrap pcp-wrap">
-			<h1><?php esc_html_e( 'Page Categories', 'page-categories' ); ?></h1>
+			<h1><?php esc_html_e( 'Easy Page Sorting', 'page-categories' ); ?></h1>
 
-			<nav class="nav-tab-wrapper wp-clearfix" aria-label="<?php esc_attr_e( 'Page Categories tabs', 'page-categories' ); ?>">
+			<nav class="nav-tab-wrapper wp-clearfix" aria-label="<?php esc_attr_e( 'Easy Page Sorting tabs', 'page-categories' ); ?>">
 				<a href="<?php echo esc_url( $base_url ); ?>" class="nav-tab<?php echo 'manage' === $tab ? ' nav-tab-active' : ''; ?>">
 					<?php esc_html_e( 'Manage Categories', 'page-categories' ); ?>
 				</a>

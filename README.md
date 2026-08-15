@@ -1,4 +1,4 @@
-# Page Categories (Internal)
+# Easy Page Sorting
 
 A WordPress plugin for **internally** categorizing Pages in the admin. Tag pages with color-coded labels so you can see at a glance what each page is for, then sort and filter the Pages list by those labels.
 
@@ -9,7 +9,7 @@ These categories are purely an admin organization tool: they are **not** taxonom
 - **Color-coded badges** in a new "Category" column on the Pages list (`Pages → All Pages`).
 - **Sort** the Pages list by category — click the "Category" column header. Sorting follows the order you define on the management screen, and uncategorized pages stay in the list.
 - **Filter** the Pages list with a category dropdown (including an "Uncategorized" option).
-- **Management screen** at `Pages → Page Categories`, split into two tabs:
+- **Management screen** at `Pages → Easy Page Sorting`, split into two tabs:
   - **Manage Categories** — add categories with a name and color (a sensible palette is suggested
     automatically), rename and recolor inline with a live badge preview, drag rows to reorder (this
     order drives the column sort), see how many pages use each category, and delete a category
@@ -31,8 +31,8 @@ These categories are purely an admin organization tool: they are **not** taxonom
 ## Installation
 
 1. Copy this plugin folder into `wp-content/plugins/` (or zip it and upload via `Plugins → Add New → Upload Plugin`).
-2. Activate **Page Categories (Internal)** on the Plugins screen.
-3. Go to `Pages → Page Categories` to create your first categories.
+2. Activate **Easy Page Sorting** on the Plugins screen.
+3. Go to `Pages → Easy Page Sorting` to create your first categories.
 
 ## Updating
 
